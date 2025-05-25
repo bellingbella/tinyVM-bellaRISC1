@@ -24,8 +24,8 @@
 |         | 8-bit         | 8-bit    | 8-bit      | 8-bit      |
 | --------- | --------------- | ---------- | ------------ | ------------ |
 |         | Operator Code | Register | Operator 2 | Operator 3 |
-| Math    |               | Ra, Rb   | Rd         | Mode (S/U) |
-| Bitwise |               | Ra, Rb   | Rc         | Mode       |
+| M    |               | Ra, Rb   | Rd         | Mode (S/U) |
+| B |               | Ra, Rb   | Rc         | Mode       |
 |         |               | Rs, Rd   |            |            |
 
 2. Instruction List <br>
