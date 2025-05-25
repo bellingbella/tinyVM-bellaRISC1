@@ -6,7 +6,7 @@
 > the division currently was not available and only `ADD`, `SUB` and `CLF` could affect on `tinyVM.flags` (btw `tinyVM.overflow` was not available).
 
 > [!NOTE]
-> please read the license in `LICENSE/` directory before fork, clone or use this source code.
+> please read the license in `LICENSE` file before fork, clone or use this source code.
 
 # TinyVM.js: Bella-RISC
 
