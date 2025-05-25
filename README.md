@@ -28,7 +28,7 @@
 | Bitwise |               | Ra, Rb   | Rc         | Mode       |
 |         |               | Rs, Rd   |            |            |
 
-2. Instruction List
+2. Instruction List <br>
    **Note:**
    - `Rd` was destination register, `Rs` was source register, `R(a, b and c)` was additional register
    - Offset value was 32-bits, not 8-bits and based on r15 (pc register).
