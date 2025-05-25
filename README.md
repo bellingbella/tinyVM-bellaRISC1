@@ -12,7 +12,7 @@
 
 ## Introducing
 
-- This Virtual Machine uses Bella-RISC architecture that desgined by `Belling Bella` (Me) and based in [RISC]("https://en.wikipedia.org/wiki/Reduced_instruction_set_computer")
+- This Virtual Machine uses Bella-RISC32 architecture that desgined by `Belling Bella` (Me) and based in [RISC]("https://en.wikipedia.org/wiki/Reduced_instruction_set_computer")
 - TinyVM can run a simple software on your website, your console,etc.
 
 ## Bella-RISC Instructions structure and list
