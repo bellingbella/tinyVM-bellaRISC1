@@ -6,15 +6,22 @@
         AUTHOR(S): LE NGOC CUONG
 */
 class tinyVM {
-    constructor(memorySize, ROMImage) {
+    constructor(memorySize, ROMImage, mode) {
+        this.mode = {
+            //debug: false, //debug mode
+            verbose: mode.verbose, //verbose mode
+            stepLimit: mode.stepLimit, //step limit for the VM
+            dumpMemoryAtEnd: mode.dumpMemoryAtEnd //dump memory at the end of execution
+        }
         this.memory = [];
         this.register = [];
         this.flags = {
             zero: false,
-            negative: false
+            negative: false,
+            
         };
 
-        for (let i = 0; i < memorySize;i++)  this.memory.push(0x0); //initial memory
+        this.memory = new Uint8Array(memorySize);
         for (let i = 0; i < 16;i++) this.register[i] = 0x0;
         this.register[15] = 0; //avoid the risk.
 
@@ -41,21 +48,35 @@ class tinyVM {
     }
 
 
-    runtime() {
-        (async () => {
-            while (true) {
-                //to do
-                await new Promise(resolve => setTimeout(resolve, 100)); // để tránh lock CPU
-            }
-        })();
 
+
+    runtime() {
+        let step = 0;
         while (true) {
+
+
+            
+
+
             let instr = [0,0,0,0];
             for (let i = 0; i < 4; i++) instr[i] = this.memory[this.register[15] + i];
             
             let LR = instr[1] >> 4; //Left Register //Rs
             let RR = instr[1] & 0b1111; //Right Register //RR
+
             
+            console.log("Running step:", step);
+            
+            step++;
+            if (step >= this.mode.stepLimit) {
+                console.warn("Step limit reached. Stopping execution.");
+                console.warn("use tinyVM.destroy() to destroy the VM.");
+                console.warn(`the step have stopped at: ${step}`);
+                console.warn("instruction structure is:", instr);
+
+                break;
+            }
+
             //VMBRK/HWLT
             if (instr[0] == 0) {
                 break;
@@ -67,10 +88,33 @@ class tinyVM {
                 let neg = false;
                 if (instr[3] == 0) neg = true;
                 
+                /*
                 //positve
-                if (neg == false) this.register[LR] = this.memory[this.register[15] + (offset*4) ];
+                if (neg == true) this.register[LR] = this.memory[this.register[15] + (offset*4) ];
                 //negative
-                if (neg == true) this.register[LR] = this.memory[this.register[15] - (offset*4) ];                
+                if (neg == false) this.register[LR] = this.memory[this.register[15] - (offset*4) ];   
+                */
+
+                let v32Int = 0;
+                if (neg == true) {
+                    v32Int = _8bitTo32bit(
+                        this.memory[this.register[15] + (offset*4)],
+                        this.memory[this.register[15] + (offset*4) + 1],
+                        this.memory[this.register[15] + (offset*4) + 2],
+                        this.memory[this.register[15] + (offset*4) + 3]
+                    );
+                }
+                else {
+                    v32Int = _8bitTo32bit(
+                        this.memory[this.register[15] - (offset*4)],
+                        this.memory[this.register[15] - (offset*4) + 1],
+                        this.memory[this.register[15] - (offset*4) + 2],
+                        this.memory[this.register[15] - (offset*4) + 3]
+                    );
+                }
+                this.register[LR] = v32Int; //fixed the bug of 8-bit to 32-bit conversion.
+
+                console.warn("LDR instruction executed. LR:", LR, "Value:", this.register[LR], "Offset:", offset, "Negative:", neg);             
             }
 
             //CPR
@@ -94,14 +138,16 @@ class tinyVM {
 
             //BO
             if (instr[0] == 5) {
-                let offset = instr[2];
+                let offset = instr[1];
                 let neg = false;
                 if (instr[3] == 0) neg = true;
 
+                
+
                 //positve
-                if (neg == false) this.register[15] = this.register[15] + (offset*4) ;
+                if (neg == true) this.register[15] = this.register[15] + (offset*4) ;
                 //negative
-                if (neg == true) this.register[15] = this.register[15] - (offset*4) ;
+                if (neg == false) this.register[15] = this.register[15] - (offset*4) ;
                 continue;    
             }
 
@@ -281,11 +327,65 @@ class tinyVM {
                 //extension.
             }
 
+            console.log("Step:", step, "Instruction:", instr, "PC:", this.register[15], "Registers:", this.register, "Flags:", this.flags);
 
             this.register[15] += 4;
         }
-
+        if (this.mode.dumpMemoryAtEnd) {
+            console.log("Memory dump at end of execution:", this.memory);
+            console.log("Register dump at end of execution:", this.register);
+            console.log("Flags dump at end of execution:", this.flags);
+        }
         console.warn("Runtime was done.");
+    }
+
+    //destroy the VM
+    destroy() {
+        this.memory = [];
+        this.register = [];
+        this.flags = {
+            zero: false,
+            negative: false
+        };
+        console.warn("VM was destroyed.");
+    }
+
+    //debug 
+    getMemory() {
+        return this.memory;
+    }
+    getRegister() {
+        return this.register;
+    }
+    getFlags() {
+        return this.flags;
+    }
+    getMode() {
+        return this.mode;
+    }
+    setMemory(address, value) {
+        if (address < 0 || address >= this.memory.length) {
+            throw new Error("Memory address out of bounds.");
+        }
+        if (value < 0 || value > 255) {
+            throw new Error("Value must be between 0 and 255.");
+        }
+        this.memory[address] = value;
+    }
+    setRegister(index, value) {
+        if (index < 0 || index >= this.register.length) {
+            throw new Error("Register index out of bounds.");
+        }
+        if (value < -2147483648 || value > 2147483647) {
+            throw new Error("Value must be a signed 32-bit integer.");
+        }
+        this.register[index] = value | 0; // Ensure it's a signed 32-bit integer
+    }       
+    setFlags(flags) {
+        if (typeof flags.zero !== 'boolean' || typeof flags.negative !== 'boolean') {
+            throw new Error("Flags must be an object with boolean properties zero and negative.");
+        }
+        this.flags = flags;
     }
 
 }
@@ -298,7 +398,7 @@ function vsint32(a) {
     return a | 0;
 }
 
-/*
+
 function _8bitTo32bit(a,b,c,d) {
     let r;
     r = a << 24;
@@ -308,6 +408,7 @@ function _8bitTo32bit(a,b,c,d) {
     return r;
 }
 
+/*
 const t = new tinyVM(100, [
     0b11000000,0b11111111,0b00000011,0b11000000,
     0b00000000,0b00000000,0b00000000,0b00000000,
