@@ -43,19 +43,20 @@
 | 1  | LDR (Load to Reg)                  | Rd                        | Offset                      | 0 = Positive (Before) ; 1 = Negative (After) |
 | 2  | CPR (Copy to Reg)                  | Rs, Rd                    | Ignored                     | Ignored                                      |
 | 3  | STR (Store Reg)                    | Rs, Rd(Address)           | Ignored                     | Ignored                                      |
-| 4  | B (Branch)                         | Rs                        | Ignored                     | Ignored                                      |
-| 5  | BO (Branch with offset)            | Offset                    | Ignored                     | 0 = Positive (Before) ; 1 = Negative (After) |
-| 6  | ADD                                | Ra, Rb                    | Rd                          | 1 = Signed                                   |
-| 7  | SUB                                | Ra, Rb                    | Rd                          | 1 = Signed                                   |
-| 8  | MUL                                | Ra, Rb                    | Rd                          | 1 = Signed                                   |
-| 9  | DIV                                | Ra, Rb                    | Rd                          | 1 = Signed                                   |
-| 10 | AND                                | Ra, Rb                    | Rd                          | Ignored                                      |
-| 11 | OR                                 | Ra, Rb                    | Rd                          | Ignored                                      |
-| 12 | XOR                                | Ra, Rb                    | Rd                          | Ignored                                      |
-| 13 | NOT                                | Rs                        | Rd                          | Ignored                                      |
-| 14 | NB (Branch if Negative)            | Rs                        | Ignored                     | Ignored                                      |
-| 15 | ZB (Branch if Zero)                | Rs                        | Ignored                     |                                              |
-| 16 | SHL                                | Rs, Ra                    | Rd                          | Ignored                                      |
-| 17 | SHR                                | Rs, Ra                    | Rd                          | Ignored                                      |
-| 18 | CLF (Reset Flags)                  | Ignored                   | Ignored                     | Ignored                                      |
-| 19 | ESBC (External System Binary Code) | Data                      | Data                        | Dat                                          |
+| 4  | RMA (Read Memory from Address)     | Rd, Rs                    | Ignored                     | Ignored                                      |
+| 5  | B (Branch)                         | Rs                        | Ignored                     | Ignored                                      |
+| 6  | BO (Branch with offset)            | Offset                    | Ignored                     | 0 = Positive (Before) ; 1 = Negative (After) |
+| 7  | ADD                                | Ra, Rb                    | Rd                          | 1 = Signed                                   |
+| 8  | SUB                                | Ra, Rb                    | Rd                          | 1 = Signed                                   |
+| 9  | MUL                                | Ra, Rb                    | Rd                          | 1 = Signed                                   |
+| 10 | DIV                                | Ra, Rb                    | Rd                          | 1 = Signed                                   |
+| 11 | AND                                | Ra, Rb                    | Rd                          | Ignored                                      |
+| 12 | OR                                 | Ra, Rb                    | Rd                          | Ignored                                      |
+| 13 | XOR                                | Ra, Rb                    | Rd                          | Ignored                                      |
+| 14 | NOT                                | Rs                        | Rd                          | Ignored                                      |
+| 15 | NB (Branch if Negative)            | Rs                        | Ignored                     | Ignored                                      |
+| 16 | ZB (Branch if Zero)                | Rs                        | Ignored                     |                                              |
+| 17 | SHL                                | Rs, Ra                    | Rd                          | Ignored                                      |
+| 18 | SHR                                | Rs, Ra                    | Rd                          | Ignored                                      |
+| 19 | CLF (Reset Flags)                  | Ignored                   | Ignored                     | Ignored                                      |
+| 20 | ESBC (External System Binary Code) | Data                      | Data                        | Dat                                          |
