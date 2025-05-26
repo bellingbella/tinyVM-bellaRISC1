@@ -129,15 +129,29 @@ class tinyVM {
                 this.memory[address] = this.register[LR];
             }
 
-            //B
+            //RMA
             if (instr[0] == 4) {
+                let address = this.register[RR];
+                let vint32 = _8bitTo32bit(
+                    this.memory[address],
+                    this.memory[address + 1],
+                    this.memory[address + 2],
+                    this.memory[address + 3]
+                );
+                this.register[LR] = vint32;
+                
+
+            }
+
+            //B
+            if (instr[0] == 5) {
                 this.register[15] = this.register[LR]; 
                 continue;
                 //be careful, the code may broke if you branch not to a address that is not factor of 4.
             }
 
             //BO
-            if (instr[0] == 5) {
+            if (instr[0] == 6) {
                 let offset = instr[1];
                 let neg = false;
                 if (instr[3] == 0) neg = true;
@@ -152,7 +166,7 @@ class tinyVM {
             }
 
             //ADD
-            if (instr[0] == 6) {
+            if (instr[0] == 7) {
                 if (instr[2] > 15) {
                     
                 }
@@ -182,7 +196,7 @@ class tinyVM {
 
 
             //SUB
-            if (instr[0] == 7) {
+            if (instr[0] == 8) {
                 if (instr[2] > 15) {
                     
                 }
@@ -211,7 +225,7 @@ class tinyVM {
             }
 
             //MUL
-            if (instr[0] == 8) {
+            if (instr[0] == 9) {
                 if (instr[2] > 15) {
                     
                 }
@@ -230,7 +244,7 @@ class tinyVM {
 
 
             //AND
-            if (instr[0] == 10) {
+            if (instr[0] == 11) {
                 if (instr[2] > 15) {
                     
                 }
@@ -240,7 +254,7 @@ class tinyVM {
             }
 
             //OR
-            if (instr[0] == 11) {
+            if (instr[0] == 12) {
                 if (instr[2] > 15) {
                     
                 }
@@ -250,7 +264,7 @@ class tinyVM {
             }
 
             //XOR
-            if (instr[0] == 12) {
+            if (instr[0] == 13) {
                 if (instr[2] > 15) {
                     
                 }
@@ -260,7 +274,7 @@ class tinyVM {
             }
 
             //NOT
-            if (instr[0] == 13) {
+            if (instr[0] == 14) {
                 if (instr[2] > 15) {
                     
                 }
@@ -270,7 +284,7 @@ class tinyVM {
             }
 
             //NB
-            if (instr[0] == 14) {
+            if (instr[0] == 15) {
                 if (this.flags.negative == true) {
                     this.register[15] = this.register[LR]; 
                     continue;
@@ -280,7 +294,7 @@ class tinyVM {
             }
 
             //ZB
-            if (instr[0] == 15) {
+            if (instr[0] == 16) {
                 if (this.flags.zero == true) {
                     this.register[15] = this.register[LR]; 
                     continue;
@@ -290,7 +304,7 @@ class tinyVM {
             }
 
             //SHL
-            if (instr[0] == 16) {
+            if (instr[0] == 17) {
                 if (instr[2] > 255) {
 
                 }
@@ -301,7 +315,7 @@ class tinyVM {
 
             
             //SHR
-            if (instr[0] == 17) {
+            if (instr[0] == 18) {
                 if (instr[2] > 255) {
 
                 }
@@ -311,7 +325,7 @@ class tinyVM {
             }
 
             //CLF
-            if (instr[0] == 18) {
+            if (instr[0] == 19) {
                 if (instr[2] > 255) {
 
                 }
@@ -322,7 +336,7 @@ class tinyVM {
             }
 
             //ESBC
-            if (instr[0] = 19) {
+            if (instr[0] = 20) {
                 //todo
                 //extension.
             }
