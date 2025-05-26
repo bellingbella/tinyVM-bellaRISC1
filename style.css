@@ -1,0 +1,72 @@
+:root {
+    --global-background-color: rgb(219, 219, 219);
+}
+
+@font-face {
+    font-family: "Jetbrains Mono";
+    src: url("/fonts/default.ttf");
+}
+
+
+
+body {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    font-family: "Jetbrains Mono";
+}
+
+.menu {
+    cursor: pointer;
+    width: 100%;
+    border: 1px solid black ;
+    height: 1%;
+    display: flex;
+    background-color: rgb(219, 219, 219);
+}
+
+.menu > p  {
+    margin-left: 30px;
+}
+
+
+
+.console {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+    background-color: rgb(204, 204, 204);
+}
+
+.console > div {
+ 
+    height: 100%;
+    width: 50%;
+    border: 1px solid black ;
+}
+
+.editor {
+    display: flex;
+    flex-direction: column;
+}
+
+.editor > div  {
+    border: 1px solid black ;
+    height: 50%;
+    width:  100%; 
+}
+
+.code {
+    padding: 20px;
+    font-family: "Jetbrains Mono";
+    font-size: 20px;
+    width: 100%;
+    height: 100%;
+    resize: none;
+    background: none;
+    border: none;
+}
+
+.code:focus {
+    outline: none;
+}

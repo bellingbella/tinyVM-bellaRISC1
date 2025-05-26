@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="./style.css"/>
+    </head>
+    <body>
+        <div class="menu">
+            <p onclick="compileFile()">Compiler</p>
+            <p>Run</p>
+            <p>Source Code</p>
+            <p>Legals</p>
+            <p>Author(s)</p>
+        </div>
+        <div class="console">
+            <div class="editor">
+                <div class="code-editor">
+                    <textarea class="code" id="code"></textarea>
+                </div>
+                <div class="readOnly">
+                    <div class="inside">
+                        <div id="errorBox" style="display: none;">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="runtime-console">
+                
+            </div>
+        </div>
+        
+        <script src="tinyVM/compiler.js"></script>
+    </body>
+</html>
