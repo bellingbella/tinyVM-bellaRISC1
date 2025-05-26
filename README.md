@@ -1,5 +1,3 @@
-> [!CAUTION]
-> **DO NOT TRY**, the project isn't tested yet and this repository is for  fallback.
 
 > [!WARNING]
 > the division currently is not available and only `ADD`, `SUB` and `CLF` can affect on `tinyVM.flags` (btw `tinyVM.overflow` is not available).
