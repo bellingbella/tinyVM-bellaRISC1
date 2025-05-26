@@ -1,5 +1,5 @@
 > [!CAUTION]
-> **DO NOT TRY**, the project isn't tested yet and this repository is for the my("our") fallback.
+> **DO NOT TRY**, the project isn't tested yet and this repository is for fallback.
 
 
 > [!WARNING]
