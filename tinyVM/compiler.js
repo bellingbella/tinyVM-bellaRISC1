@@ -116,7 +116,7 @@ function compileFile() {
             if (operatorCode == "b") {
                 let register__ =  registerMatch(instruction[1], "r0" /* unused */);
 
-                code_binary.push(4);
+                code_binary.push(5);
                 code_binary.push(register__);
                 code_binary.push(0);
                 code_binary.push(0);                
@@ -137,7 +137,7 @@ function compileFile() {
                     return null;
                 }
 
-                code_binary.push(5);
+                code_binary.push(6);
                 code_binary.push(offset__);
                 code_binary.push(0);
                 code_binary.push(offsetNegative);   
@@ -164,7 +164,7 @@ function compileFile() {
                     errorReport(errorBoxD, "wdym? (signed or unsigned?)");
                 }
 
-                code_binary.push(6);
+                code_binary.push(7);
                 code_binary.push(registerMain);
                 code_binary.push(register);
                 code_binary.push(signed);   
@@ -197,8 +197,7 @@ function compileFile() {
                 code_binary.push(signed);   
             } 
 
-
-            if (operatorCode == "div") {
+                        if (operatorCode == "mul") {
                 let registerMain = registerMatch(instruction[1], instruction[2]);
                 let register = 0;
                 let signed = 0;
@@ -225,6 +224,33 @@ function compileFile() {
                 code_binary.push(signed);   
             } 
 
+            if (operatorCode == "div") {
+                let registerMain = registerMatch(instruction[1], instruction[2]);
+                let register = 0;
+                let signed = 0;
+                if (!firstWasNot(instruction[3], registerList)) {
+                    register = genRegister(instruction[3]);
+
+                }
+                else {
+                    errorReport(errorBoxD, "Invalid register");
+                }
+                if (instruction[4] == "signed") {
+                    signed = 1;
+                }
+                else if (instruction[4] == "unsigned") {
+                    signed = 0; //for sure.
+                }
+                else {
+                    errorReport(errorBoxD, "wdym? (signed or unsigned?)");
+                }
+
+                code_binary.push(10);
+                code_binary.push(registerMain);
+                code_binary.push(register);
+                code_binary.push(signed);   
+            } 
+
             
             if (operatorCode == "and") {
                 let registerMain = registerMatch(instruction[1], instruction[2]);
@@ -237,7 +263,7 @@ function compileFile() {
                     errorReport(errorBoxD, "Invalid register");
                 }
 
-                code_binary.push(10);
+                code_binary.push(11);
                 code_binary.push(registerMain);
                 code_binary.push(register);
                 code_binary.push(signed);   
@@ -254,7 +280,7 @@ function compileFile() {
                     errorReport(errorBoxD, "Invalid register");
                 }
 
-                code_binary.push(11);
+                code_binary.push(12);
                 code_binary.push(registerMain);
                 code_binary.push(register);
                 code_binary.push(si0gned);   
@@ -271,7 +297,7 @@ function compileFile() {
                     errorReport(errorBoxD, "Invalid register");
                 }
 
-                code_binary.push(12);
+                code_binary.push(13);
                 code_binary.push(registerMain);
                 code_binary.push(register);
                 code_binary.push(si0gned);   
@@ -288,7 +314,7 @@ function compileFile() {
                     errorReport(errorBoxD, "Invalid register");
                 }
 
-                code_binary.push(13);
+                code_binary.push(14);
                 code_binary.push(registerMain);
                 code_binary.push(register);
                 code_binary.push(si0gned);   
@@ -297,7 +323,7 @@ function compileFile() {
             if (operatorCode == "nb") {
                 let register__ =  registerMatch(instruction[1], "r0" /* unused */);
 
-                code_binary.push(14);
+                code_binary.push(15);
                 code_binary.push(register__);
                 code_binary.push(0);
                 code_binary.push(0);                
@@ -306,7 +332,7 @@ function compileFile() {
             if (operatorCode == "zb") {
                 let register__ =  registerMatch(instruction[1], "r0" /* unused */);
 
-                code_binary.push(15);
+                code_binary.push(16);
                 code_binary.push(register__);
                 code_binary.push(0);
                 code_binary.push(0);                
@@ -323,7 +349,7 @@ function compileFile() {
                     errorReport(errorBoxD, "Invalid register");
                 }
 
-                code_binary.push(16);
+                code_binary.push(17);
                 code_binary.push(registerMain);
                 code_binary.push(register);
                 code_binary.push(si0gned);   
@@ -341,14 +367,14 @@ function compileFile() {
                     return null;
                 }
 
-                code_binary.push(17);
+                code_binary.push(18);
                 code_binary.push(registerMain);
                 code_binary.push(register);
                 code_binary.push(si0gned);   
             } 
 
             if (operatorCode == "clf") {
-                code_binary.push(18);
+                code_binary.push(19);
                 code_binary.push(0);
                 code_binary.push(0);
                 code_binary.push(0);
@@ -359,7 +385,7 @@ function compileFile() {
                     errorReport(errorBoxD, "Offset cannot be bigger than 255 (0xFF)");
                 }
 
-                code_binary.push(19);
+                code_binary.push(20); //???
                 code_binary.push(parseInt(instruction[1]));
                 code_binary.push(parseInt(instruction[2]));
                 code_binary.push(parseInt(instruction[3]));
@@ -430,10 +456,24 @@ function compileFile() {
 
         changeBlockColor = !changeBlockColor;
         if (changeBlockColor) {
-            outputBoxD.innerHTML += `<div class="hex-item0">${code_binary[jn].toString(16)}</div>`;
+            outputBoxD.innerHTML += `<div class="hex-item0">${ ( code_binary[jn].toString(16).length == 1  ) ? `0${code_binary[jn].toString(16)}` : code_binary[jn].toString(16) }</div>`;
         } else {
-            outputBoxD.innerHTML += `<div class="hex-item1">${code_binary[jn].toString(16)}</div>`;
+            outputBoxD.innerHTML += `<div class="hex-item1">${ ( code_binary[jn].toString(16).length == 1  ) ? `0${code_binary[jn].toString(16)}` : code_binary[jn].toString(16) }</div>`;
         }
     
     }
+
+}
+
+function excuteCode() {
+    console.log("Executing code...");
+    const t = new tinyVM(2306 /* 100bytes */, code_binary, { 
+        verbose: true,
+        debug: true,
+        stepLimit: 1000,
+        dumpMemoryAtEnd: true
+    });
+    t.runtime();
+    t.destroy(); // Clean up the VM instance
+    console.log("Code execution completed.");
 }
