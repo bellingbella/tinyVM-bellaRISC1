@@ -11,15 +11,10 @@ function firstWasNot(__string__,__object__) {
 }
 
 function genRegister(register) {
-    if (!firstWasNot(left, registerList) && !firstWasNot(right, registerList) ) {
-        for (let i = 0; i < registerList.length;i++) {
-            return i;
-        }
+    for (let i = 0; i < registerList.length; i++) {
+        if (register === registerList[i]) return i;
     }
-    else {
-        
-        return -1; //idk
-    }
+    return -1;
 }
 
 function registerMatch(left, right) {
@@ -34,7 +29,7 @@ function registerMatch(left, right) {
         }
     }
     else {
-        return -1; //nigga
+        return -1; //i
     }
 
     let byte = (leftI << 4) | rightI;
@@ -49,15 +44,19 @@ function errorReport(element, msg, line) {
 }
 
 
-
+let code_binary = [];
 function compileFile() {
     const code = document.getElementById('code');
     const errorBoxD = document.getElementById("errorBox");
+    const outputBoxD = document.getElementById("outputBox");
+    outputBoxD.innerHTML = ""; // Clear previous output
 
 
     let code_data = code.value.split('\n');
-    let code_binary = [];
-
+    code_binary = []; // Reset binary code array
+    errorBoxD.style.display = "none"; // Hide error box initially;
+    outputBoxD.style.display = "none"; // Hide output box initially
+   
     for (let i = 0;i < code_data.length;i++) {
         let instruction = code_data[i].split(" ");
         let operatorCode = instruction[0];  
@@ -65,6 +64,7 @@ function compileFile() {
         let realOperatorCode_hint = ["hlt", "ldr", "cpr", "str", "b", "bo", "add", "sub", "mul", "div", "and", "or", "xor", "not", "nb", "zb", "shl", "shr", "clf", "esbc"]
         let subtractOperatorCode_hint = [".bit8", ".char"];
         if (!firstWasNot(operatorCode, realOperatorCode_hint) || !firstWasNot(operatorCode, subtractOperatorCode_hint)) {
+            // Valid operator code
             if (operatorCode == "hlt") {
                 code_binary.push(0);
                 code_binary.push(0);
@@ -82,13 +82,17 @@ function compileFile() {
 
 
                 let offsetNegative = 0;
-                if (instruction[3] == "pos") offsetNegative = 0;
-                if (instruction[3] == "neg") offsetNegative = 1;
+                if (instruction[3] == "pos") { offsetNegative = 0; }
+                else if (instruction[3] == "neg") offsetNegative = 1;
+                else {
+                    errorReport(errorBoxD, "Invalid offset type (pos/neg)", i);
+                    return null;
+                }
 
                 code_binary.push(1);
                 code_binary.push(register__);
                 code_binary.push(offset__);
-                code_binary.push(offsetNigative);                
+                code_binary.push(offsetNegative);                
             }
 
             if (operatorCode == "cpr") {
@@ -119,15 +123,19 @@ function compileFile() {
             }
 
             if (operatorCode == "bo") {
-                let offset__ = parseInt(instruction[2]);
+                let offset__ = parseInt(instruction[1]);
                 if (offset__ > 255)  {
                     errorReport(errorBoxD, "Offset cannot be bigger than 255 (0xFF)", i);
                     return null;
                 }
 
                 let offsetNegative = 0;
-                if (instruction[3] == "pos") offsetNegative = 0;
-                if (instruction[3] == "neg") offsetNegative = 1;
+                if (instruction[2] == "pos") { offsetNegative = 0; }
+                else if (instruction[2] == "neg") offsetNegative = 1;
+                else {
+                    errorReport(errorBoxD, "Invalid offset type (pos/neg)", i);
+                    return null;
+                }
 
                 code_binary.push(5);
                 code_binary.push(offset__);
@@ -232,7 +240,7 @@ function compileFile() {
                 code_binary.push(10);
                 code_binary.push(registerMain);
                 code_binary.push(register);
-                code_binary.push(si0gned);   
+                code_binary.push(signed);   
             } 
 
             if (operatorCode == "or") {
@@ -348,7 +356,7 @@ function compileFile() {
 
             if (operatorCode == "esbc") {
                 if (parseInt(instruction[1]) > 255 || parseInt(instruction[2]) > 255 || parseInt(instruction[3]) > 255 ) {
-                    errorBoxD(errorBoxD, "Offset cannot be bigger than 255 (0xFF)");
+                    errorReport(errorBoxD, "Offset cannot be bigger than 255 (0xFF)");
                 }
 
                 code_binary.push(19);
@@ -356,13 +364,76 @@ function compileFile() {
                 code_binary.push(parseInt(instruction[2]));
                 code_binary.push(parseInt(instruction[3]));
             }
+
+
+            //Additional operators can be added here.
+
+            if (operatorCode == ".bit8") {
+                //don't miss anything.
+                if (instruction.length != 5) {
+                    errorReport(errorBoxD, "Invalid number of arguments for .bit8 operator", i);
+                    return;
+                }
+                for (let j = 1; j < instruction.length; j++) {
+                    if (parseInt(instruction[j]) > 255) {
+                        errorReport(errorBoxD, "Character value cannot be bigger than 255 (0xFF)", i);
+                        return;
+                    }
+                }
+                code_binary.push(parseInt(instruction[1]));
+                code_binary.push(parseInt(instruction[2]));
+                code_binary.push(parseInt(instruction[3]));
+                code_binary.push(parseInt(instruction[4]));               
+            }
+
+            if (operatorCode == ".char") {
+                //don't miss anything.
+                if (instruction.length != 5) {
+                    errorReport(errorBoxD, "Invalid number of arguments for .char operator", i);
+                    return;
+                }
+                for (let j = 1; j < instruction.length; j++) {  
+                    if (instruction[j].length != 1) {
+                        errorReport(errorBoxD, "Character value must be a single character", i);
+                        return;
+                    }
+                }
+                code_binary.push(instruction[1].charCodeAt(0));
+                code_binary.push(instruction[2].charCodeAt(0));
+                code_binary.push(instruction[3].charCodeAt(0));
+                code_binary.push(instruction[4].charCodeAt(0));               
+            }
+
+
+            errorBoxD.style.display = "none"; // Hide error box if no errors found 
             
-            console.log(code_binary);
+            console.log(
+  `Compiled line ${i + 1}: ${operatorCode} -> [` +
+  code_binary.map(n => n.toString(16).toUpperCase().padStart(2, '0')).join(", ") +
+  `]`
+);
+
         }
         else {
             errorBoxD.style.display = "block";
             errorReport(errorBoxD, "Invalid Operator Code", i);
             return;
         }
+
+        
+    }
+    outputBoxD.style.display = "block"; // Show output box
+    let changeBlockColor = false;
+       
+    for (let jn = 0; jn < code_binary.length; jn++) {
+
+
+        changeBlockColor = !changeBlockColor;
+        if (changeBlockColor) {
+            outputBoxD.innerHTML += `<div class="hex-item0">${code_binary[jn].toString(16)}</div>`;
+        } else {
+            outputBoxD.innerHTML += `<div class="hex-item1">${code_binary[jn].toString(16)}</div>`;
+        }
+    
     }
 }
