@@ -29,8 +29,7 @@
    **Note:**
    - `Rd` is destination register, `Rs` is source register, `R(a, b and c)` is additional register
    - Offset value is 32-bits, not 8-bits and based on r15 (pc register).
-   - Registers' order on `Main Register(s) / Offset` will be ordered from left (after `Operator Code`) to right (before `Offset / Addtional Register`) of bit order.
-   - (*1): Virtualizating only (if it is real machine, it would halt the cpu.)
+   - (*1): Virtualization only (if it is real machine, it would halt the cpu.)
    - the `Operator Code` binary identification based on the `N` column.
    - Read the `WARNING` and `NOTE` on the README's header.
 
